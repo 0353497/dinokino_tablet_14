@@ -38,7 +38,20 @@ class _VideoPageState extends State<VideoPage> {
           Positioned.fill(
             child: AspectRatio(
               aspectRatio: videoPlayerController.value.aspectRatio,
-              child: VideoPlayer(videoPlayerController),
+              child: GestureDetector(
+                onTap: () {
+                  if (videoPlayerController.value.isPlaying) {
+                    setState(() {
+                      videoPlayerController.pause();
+                    });
+                  } else {
+                    setState(() {
+                      videoPlayerController.play();
+                    });
+                  }
+                },
+                child: VideoPlayer(videoPlayerController),
+              ),
             ),
           ),
           Positioned(
