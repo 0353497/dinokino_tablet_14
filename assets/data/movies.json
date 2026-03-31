@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Dino In Space",
+    "rating": 4,
+    "image": "images/movies/dino_in_space.png",
+    "description": "A dinosaur decides to leave Earth behind and explore the stars. Based on a true story, not.",
+    "nowPlaying": true
+  },
+  {
+    "title": "Tiny Rex’s Big Day",
+    "rating": 5,
+    "image": "images/movies/tiny_rex_big_day.png",
+    "description": "A small dinosaur with tiny arms faces a huge challenge: winning the annual Dino Olympics.",
+    "nowPlaying": false
+  },
+  {
+    "title": "Cretaceous Park Rangers",
+    "rating": 3,
+    "image": "images/movies/cretaceous_park_rangers.jpg",
+    "description": "When dinosaurs start running wild, only two rookie park rangers can restore order with style.",
+    "nowPlaying": true
+  },
+  {
+    "title": "The Fossil Whisperer",
+    "rating": 3,
+    "image": "images/movies/the_fossil_whisperer.png",
+    "description": "A paleontologist accidentally brings fossils back to life—and they want their museum back.",
+    "nowPlaying": true
+  },
+  {
+    "title": "Meteor and Me",
+    "rating": 4,
+    "image": "images/movies/meteor_and_me.jpg",
+    "description": "A heartfelt story about a dino who befriends the meteor that’s supposed to end it all.",
+    "nowPlaying": true
+  },
+  {
+    "title": "Jurassic Groove",
+    "rating": 5,
+    "image": "images/movies/jurassic_groove.jpg",
+    "description": "A funky T-Rex discovers his love for disco and must dance to save the prehistoric planet.",
+    "nowPlaying": false
+  },
+  {
+    "title": "Lost Eggs of Raptoria",
+    "rating": 5,
+    "image": "images/movies/lost_eggs_of_raptoria.jpg",
+    "description": "An epic adventure where brave raptors travel across volcanoes to find their stolen eggs.",
+    "nowPlaying": false
+  },
+  {
+    "title": "Dino High",
+    "rating": 2,
+    "image": "images/movies/dino_high.jpg",
+    "description": "Teenage dinosaurs face friendship, exams, and the occasional asteroid drill at Dino High School.",
+    "nowPlaying": false
+  },
+  {
+    "title": "T-Rex Detective",
+    "rating": 4,
+    "image": "images/movies/t_rex_detective.png",
+    "description": "A retired T-Rex becomes a private investigator solving prehistoric mysteries one bite at a time.",
+    "nowPlaying": true
+  },
+  {
+    "title": "The Ice Age Roar",
+    "rating": 3,
+    "image": "images/movies/the_ice_age_roar.jpg",
+    "description": "A group of dinosaurs struggle to survive the coldest age in history with teamwork and loud roars.",
+    "nowPlaying": false
+  },
+  {
+    "title": "Dino Chef",
+    "rating": 5,
+    "image": "images/movies/dino_chef.jpg",
+    "description": "A velociraptor with a taste for fine dining opens the first prehistoric restaurant in town.",
+    "nowPlaying": true
+  },
+  {
+    "title": "Time Travelosaurus",
+    "rating": 4,
+    "image": "images/movies/time_travelosaurus.png",
+    "description": "A time-traveling stegosaurus visits the future to warn humans about their plastic habits.",
+    "nowPlaying": false
+  }
+]

@@ -1,0 +1,35 @@
+name: dinokino_tablet
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.7.3
+  image_picker: ^1.2.1
+  shared_preferences: ^2.5.5
+  video_player: ^2.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+  - assets/images/
+  - assets/images/movies/
+  - assets/fonts/Alatsi/
+  - assets/data/
+  - assets/videos/
+  fonts:
+    - family: Alatsi
+      fonts:
+        - asset: assets/fonts/Alatsi/Alatsi-Regular.ttf
+
+
