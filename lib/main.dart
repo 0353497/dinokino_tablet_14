@@ -33,7 +33,7 @@ class _MainAppState extends State<MainApp> {
   void init() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+      isLoggedIn = prefs.getString("loggedInUser") == null;
     });
   }
 }

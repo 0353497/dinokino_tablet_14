@@ -126,7 +126,7 @@ class _MoviesPageState extends State<MoviesPage> {
                 Column(
                   children: [
                     if (!(movieProvider.favoriteMovies.isEmpty && !isAllmovies))
-                      SelectedWidget(),
+                      selectedWidget(),
                     if (!isAllmovies) favoriteMovieList(),
                     if (isAllmovies) allMovieList(),
                   ],
@@ -185,7 +185,7 @@ class _MoviesPageState extends State<MoviesPage> {
     );
   }
 
-  Container SelectedWidget() {
+  Container selectedWidget() {
     return Container(
       height: Get.height * .5,
       width: double.maxFinite,

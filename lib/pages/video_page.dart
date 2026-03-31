@@ -130,7 +130,7 @@ class _VideoPageState extends State<VideoPage> {
       await videoPlayerController.play();
       setState(() {});
     } catch (e) {
-      print("Error initializing video: $e");
+      debugPrint(e.toString());
     }
   }
 

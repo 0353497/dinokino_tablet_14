@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dinokino_tablet/models/user.dart';
 import 'package:dinokino_tablet/pages/movies_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  late final SharedPreferences prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
 
   @override
   void dispose() {
@@ -141,6 +151,12 @@ class _LoginPageState extends State<LoginPage> {
                                 if (!GetUtils.isEmail(value)) {
                                   return "is not a valid email";
                                 }
+
+                                if (!isLogin) {
+                                  if (emailAlreadyExists()) {
+                                    return "email aready exists";
+                                  }
+                                }
                                 return null;
                               },
                               style: TextStyle(color: Colors.white),
@@ -171,21 +187,33 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               validator: (value) {
-                                if (value == null) {
-                                  return "value can not be empty";
+                                if (!isLogin) {
+                                  if (value == null) {
+                                    return "value can not be empty";
+                                  }
+                                  if (!value.contains(RegExp(r"[a-z]"))) {
+                                    return "must contain lowercase";
+                                  }
+                                  if (!value.contains(RegExp(r"[A-Z]"))) {
+                                    return "must contain Uppercase";
+                                  }
+                                  if (!value.contains(RegExp("[0-9]"))) {
+                                    return "must contain number";
+                                  }
+                                  if (value.length < 8) {
+                                    return "value must be atleast 8 chars";
+                                  }
+                                } else {
+                                  final user = getUserFromEmail();
+                                  if (user == null) {
+                                    return "user not found";
+                                  }
+                                  if (user.password !=
+                                      passwordController.value.text) {
+                                    return "incorrect password";
+                                  }
                                 }
-                                if (!value.contains(RegExp(r"[a-z]"))) {
-                                  return "must contain lowercase";
-                                }
-                                if (!value.contains(RegExp(r"[A-Z]"))) {
-                                  return "must contain Uppercase";
-                                }
-                                if (!value.contains(RegExp("[0-9]"))) {
-                                  return "must contain number";
-                                }
-                                if (value.length < 8) {
-                                  return "value must be atleast 8 chars";
-                                }
+
                                 return null;
                               },
                             ),
@@ -208,14 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                                 onPressed: () async {
-                                  if (formKey.currentState?.validate() ??
-                                      false) {
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-
-                                    prefs.setBool("LoggedInUser", true);
-                                    Get.to(() => MoviesPage());
-                                  }
+                                  handleForm();
                                 },
                                 child: Text("Log in"),
                               ),
@@ -232,5 +253,78 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  bool emailAlreadyExists() {
+    List<String>? allUsers = prefs.getStringList("allUsers");
+
+    allUsers ??= [];
+    return allUsers.any(
+      (userString) =>
+          User.fromJson(jsonDecode(userString)).email ==
+          emailController.value.text.trim(),
+    );
+  }
+
+  void handleForm() async {
+    if (formKey.currentState?.validate() ?? false) {
+      List<String>? allUsers = prefs.getStringList("allUsers");
+
+      allUsers ??= [];
+      late User loggedInUser;
+      if (!isLogin) {
+        loggedInUser = handleSignUpForm(allUsers);
+      } else {
+        loggedInUser = handleSignInForm(allUsers);
+      }
+
+      prefs.setString("loggedInUser", jsonEncode(loggedInUser.toJson()));
+
+      Get.to(() => MoviesPage());
+    }
+  }
+
+  User handleSignUpForm(List<String> allUsers) {
+    int startingIndex = 1000;
+    startingIndex += allUsers.length;
+
+    final User userToAdd = User(
+      username: "user_$startingIndex",
+      password: passwordController.value.text,
+      email: emailController.value.text,
+    );
+
+    final newUser = jsonEncode(userToAdd.toJson());
+    allUsers.add(newUser);
+    prefs.setStringList("allUsers", allUsers);
+    return userToAdd;
+  }
+
+  void init() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  User handleSignInForm(List<String> allUsers) {
+    final loggedInUserString = allUsers.firstWhere((userString) {
+      final user = User.fromJson(jsonDecode(userString));
+      return user.email.toLowerCase() ==
+              emailController.value.text.trim().toLowerCase() &&
+          user.password == passwordController.value.text;
+    });
+    return User.fromJson(jsonDecode(loggedInUserString));
+  }
+
+  User? getUserFromEmail() {
+    List<String>? allUsers = prefs.getStringList("allUsers");
+
+    allUsers ??= [];
+    final userString = allUsers.firstWhere(
+      (userString) =>
+          User.fromJson(jsonDecode(userString)).email ==
+          emailController.value.text.trim(),
+      orElse: () => "",
+    );
+    if (userString.isEmpty) return null;
+    return User.fromJson(jsonDecode(userString));
   }
 }
