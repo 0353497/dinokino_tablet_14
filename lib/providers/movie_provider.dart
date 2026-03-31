@@ -10,4 +10,6 @@ class MovieProvider extends GetxController {
   final RxList<Movie> allMovies = <Movie>[].obs;
 
   final RxList<Movie> favoriteMovies = <Movie>[].obs;
+  final RxList<Movie> dislikedMovies = <Movie>[].obs;
+  final RxList<Movie> likedMovies = <Movie>[].obs;
 }

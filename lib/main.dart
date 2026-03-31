@@ -40,6 +40,8 @@ class _MainAppState extends State<MainApp> {
     }
     if (loggedInUser.isEmpty) {
       isLoggedIn = false;
+      setState(() {});
+      return;
     }
     isLoggedIn = true;
     setState(() {});

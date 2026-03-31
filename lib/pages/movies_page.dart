@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dinokino_tablet/components/dino_card.dart';
 import 'package:dinokino_tablet/components/rating_dialog.dart';
 import 'package:dinokino_tablet/models/movie.dart';
 import 'package:dinokino_tablet/models/user.dart';
@@ -387,11 +388,11 @@ class _ProfileDialogState extends State<ProfileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.white70,
-      child: SizedBox(
-        width: Get.width * .4,
-        height: Get.height * .6,
+    return SizedBox(
+      width: Get.width * .4,
+      height: Get.height * .6,
+      child: Dialog(
+        backgroundColor: Colors.white70,
         child: BackdropFilter(
           filterConfig: ImageFilterConfig.blur(sigmaX: 4, sigmaY: 4),
           child: Padding(
@@ -518,78 +519,5 @@ class _ProfileDialogState extends State<ProfileDialog> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("loggedInUser", "");
     Get.to(() => LoginPage());
-  }
-}
-
-class DinoCard extends StatelessWidget {
-  const DinoCard({super.key, required this.movie, required this.onTap});
-  final Movie movie;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.black,
-        ),
-        padding: EdgeInsets.all(8),
-        height: 250 - 12,
-        width: 130,
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadiusGeometry.circular(16),
-                  child: Image.asset(
-                    "assets/${movie.image}",
-                    fit: BoxFit.cover,
-                    height: 140,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.error);
-                    },
-                  ),
-                ),
-                Text(
-                  movie.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                Row(
-                  children: [
-                    for (int i = 0; i < 5; i++)
-                      Icon(
-                        Icons.star,
-                        size: 16,
-                        color: i < movie.rating
-                            ? Color(0xff00C8C4)
-                            : Colors.grey,
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (movie.isFavorite)
-                    Icon(Icons.favorite, color: Colors.white),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -1,5 +1,6 @@
+import 'package:dinokino_tablet/components/dino_card.dart';
 import 'package:dinokino_tablet/models/movie.dart';
-import 'package:dinokino_tablet/pages/movies_page.dart';
+import 'package:dinokino_tablet/providers/movie_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +13,9 @@ class RatingDialog extends StatefulWidget {
 }
 
 class _RatingDialogState extends State<RatingDialog> {
+  final MovieProvider provider = Get.find<MovieProvider>();
   double angle = 0;
+  bool hasRated = false;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -84,7 +87,7 @@ class _RatingDialogState extends State<RatingDialog> {
                       ),
                       onDragUpdate: (details) {
                         setState(() {
-                          angle = details.delta.distance;
+                          angle = (details.delta.distance / 100);
                         });
                       },
                       child: Material(

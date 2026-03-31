@@ -8,9 +8,20 @@ class Movie {
   final int rating;
   final String description;
   final bool nowPlaying;
+
   bool get isFavorite {
     final favorites = Get.find<MovieProvider>().favoriteMovies;
     return favorites.any((movie) => movie.title == title);
+  }
+
+  bool get isLiked {
+    final likedMovies = Get.find<MovieProvider>().likedMovies;
+    return likedMovies.any((movie) => movie.title == title);
+  }
+
+  bool get isDisliked {
+    final dislikedMovies = Get.find<MovieProvider>().dislikedMovies;
+    return dislikedMovies.any((movie) => movie.title == title);
   }
 
   Movie({
