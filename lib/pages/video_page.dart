@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:dinokino_tablet/components/rating_dialog.dart';
 import 'package:dinokino_tablet/models/movie.dart';
-import 'package:dinokino_tablet/pages/movies_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
