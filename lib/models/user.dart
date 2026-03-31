@@ -28,4 +28,13 @@ class User {
       "imagePath": imagePath,
     };
   }
+
+  User copyWith({String? username, String? imagePath}) {
+    return User(
+      username: username ?? this.username,
+      password: password,
+      email: email,
+      imagePath: imagePath ?? this.imagePath,
+    );
+  }
 }

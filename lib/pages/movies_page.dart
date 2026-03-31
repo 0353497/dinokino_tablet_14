@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dinokino_tablet/models/movie.dart';
+import 'package:dinokino_tablet/models/user.dart';
 import 'package:dinokino_tablet/pages/login_page.dart';
 import 'package:dinokino_tablet/pages/video_page.dart';
 import 'package:dinokino_tablet/providers/movie_provider.dart';
@@ -9,6 +11,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/route_manager.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MoviesPage extends StatefulWidget {
   const MoviesPage({super.key, this.isFromVideo = false, this.fromVideoMovie});
@@ -23,6 +26,8 @@ class _MoviesPageState extends State<MoviesPage> {
   bool isAllmovies = true;
   final MovieProvider movieProvider = Get.find<MovieProvider>();
   Movie selectedMovie = Get.find<MovieProvider>().allMovies.first;
+  late final SharedPreferences prefs;
+  User? currentUser;
 
   @override
   void initState() {
@@ -93,7 +98,7 @@ class _MoviesPageState extends State<MoviesPage> {
                       spacing: 12,
                       children: [
                         Text(
-                          "Steve",
+                          currentUser?.username ?? "Steve",
                           style: TextStyle(
                             fontSize: 24,
                             color: Colors.white,
@@ -101,14 +106,19 @@ class _MoviesPageState extends State<MoviesPage> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                            Get.dialog(ProfileDialog());
+                          onTap: () async {
+                            await Get.dialog(
+                              ProfileDialog(currentUser: currentUser!),
+                            );
+                            if (mounted) {
+                              updatedUser();
+                            }
                           },
                           child: CircleAvatar(
                             radius: 40,
-                            foregroundImage: AssetImage(
-                              "assets/images/profile_steve.png",
-                            ),
+                            foregroundImage: currentUser?.imagePath != null
+                                ? FileImage(File(currentUser!.imagePath!))
+                                : AssetImage("assets/images/profile_steve.png"),
                           ),
                         ),
                       ],
@@ -338,18 +348,42 @@ class _MoviesPageState extends State<MoviesPage> {
     );
   }
 
-  void init() {}
+  void init() async {
+    prefs = await SharedPreferences.getInstance();
+    updatedUser();
+  }
+
+  void updatedUser() {
+    final userString = prefs.getString("loggedInUser");
+    if (userString == null) return;
+    currentUser = User.fromJson(jsonDecode(userString));
+    setState(() {});
+  }
 }
 
 class ProfileDialog extends StatefulWidget {
-  const ProfileDialog({super.key});
+  const ProfileDialog({super.key, required this.currentUser});
+  final User currentUser;
 
   @override
   State<ProfileDialog> createState() => _ProfileDialogState();
 }
 
 class _ProfileDialogState extends State<ProfileDialog> {
-  XFile? pickedImage;
+  String? pickedImage;
+
+  late final TextEditingController nameController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameController = TextEditingController.fromValue(
+      TextEditingValue(text: widget.currentUser.username),
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -368,7 +402,7 @@ class _ProfileDialogState extends State<ProfileDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      onPressed: () => Get.to(() => LoginPage()),
+                      onPressed: () => signOut(),
                       child: Text(
                         "Sign out",
                         style: TextStyle(color: Colors.red),
@@ -399,10 +433,12 @@ class _ProfileDialogState extends State<ProfileDialog> {
                           height: 40,
                           child: IconButton(
                             onPressed: () async {
-                              pickedImage = await ImagePicker().pickImage(
+                              final xfileImage = await ImagePicker().pickImage(
                                 source: ImageSource.gallery,
                               );
-                              setState(() {});
+                              setState(() {
+                                pickedImage = xfileImage?.path;
+                              });
                             },
                             icon: Icon(Icons.edit),
                           ),
@@ -410,7 +446,7 @@ class _ProfileDialogState extends State<ProfileDialog> {
                         child: CircleAvatar(
                           radius: 80,
                           foregroundImage: pickedImage != null
-                              ? FileImage(File(pickedImage!.path))
+                              ? FileImage(File(pickedImage!))
                               : AssetImage("assets/images/profile_empty.png"),
                         ),
                       ),
@@ -426,9 +462,7 @@ class _ProfileDialogState extends State<ProfileDialog> {
                           width: 400,
                           height: 60,
                           child: TextField(
-                            controller: TextEditingController.fromValue(
-                              TextEditingValue(text: "Steve"),
-                            ),
+                            controller: nameController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               filled: true,
@@ -458,7 +492,16 @@ class _ProfileDialogState extends State<ProfileDialog> {
                         ),
                       ),
                     ),
-                    onPressed: () => Get.back(),
+                    onPressed: () async {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      final User updatedUser = widget.currentUser.copyWith(
+                        username: nameController.value.text,
+                        imagePath: pickedImage,
+                      );
+                      prefs.setString("loggedInUser", jsonEncode(updatedUser));
+                      Get.back();
+                    },
                     child: Text("Save", style: TextStyle(fontSize: 24)),
                   ),
                 ),
@@ -468,6 +511,12 @@ class _ProfileDialogState extends State<ProfileDialog> {
         ),
       ),
     );
+  }
+
+  void signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("loggedInUser", "");
+    Get.to(() => LoginPage());
   }
 }
 
