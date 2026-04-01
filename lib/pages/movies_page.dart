@@ -88,6 +88,7 @@ class _MoviesPageState extends State<MoviesPage> {
                               color: Colors.white,
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
+                              decorationColor: Colors.white,
                               decoration: !isAllmovies
                                   ? TextDecoration.underline
                                   : null,
@@ -256,6 +257,7 @@ class _MoviesPageState extends State<MoviesPage> {
                     ),
                   ),
                   Row(
+                    spacing: 12,
                     children: [
                       SizedBox(
                         width: 200,
