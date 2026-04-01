@@ -62,6 +62,9 @@ class DinoCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (movie.isLiked) Icon(Icons.thumb_up, color: Colors.white),
+                  if (movie.isDisliked)
+                    Icon(Icons.thumb_down, color: Colors.white),
                   if (movie.isFavorite)
                     Icon(Icons.favorite, color: Colors.white),
                 ],
